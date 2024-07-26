@@ -1,0 +1,29 @@
+---
+name: App CI
+
+permissions:
+  id-token: write
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        app: [mu, nu, tu]
+    uses: andreswebs/gh-actions/.github/workflows/aws-ecr-push-image.yml@main
+    with:
+      runs-on: ubuntu-latest
+      aws-region: ${{ vars.AWS_REGION }}
+      role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+      ecr-repo-name: argo-example/${{ matrix.app }}
+      context-dir: .
+      matrix-step-name: build
+      matrix-key: ${{ matrix.app }}
+      build-args: |
+        APP_NAME=${{ matrix.app }}
