@@ -22,6 +22,9 @@ jobs:
       aws-region: ${{ vars.AWS_REGION }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
       ecr-repo-name: argo-example/${{ matrix.app }}
+      ecr-registry-type: public
+      add-image-default-tag: true
+      image-default-tag: latest
       context-dir: .
       matrix-step-name: build
       matrix-key: ${{ matrix.app }}
