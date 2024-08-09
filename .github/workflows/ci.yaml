@@ -77,12 +77,22 @@ jobs:
           APP_NAME: ${{ env.APP_NAME }}
           K8S_CONFIG_TOKEN: ${{ secrets.K8S_CONFIG_TOKEN }}
 
+          ## TODO:
+          ## Track this value found on the internet for the github-actions[bot] email:
+          ## is this the correct value to use?
+          ## github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          ## Sources:
+          ## https://github.com/orgs/community/discussions/119597
+          ## https://github.com/fregante/setup-git-user/blob/main/action.yml
+          GH_ACTIONS_BOT_NAME: github-actions[bot]
+          GH_ACTIONS_BOT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+
         run: |
           BRANCH_NAME=auto-${APP_NAME}-${APP_VERSION}
           MSG="chore: update ${APP_NAME} to ${APP_VERSION}"
 
-          git config user.name "github-actions [bot]"
-          git config user.email "example@example.com"
+          git config user.name "${GH_ACTIONS_BOT_NAME}"
+          git config user.email "${GH_ACTIONS_BOT_EMAIL}"
 
           git checkout -b "${BRANCH_NAME}"
 
