@@ -30,3 +30,27 @@ jobs:
       matrix-key: ${{ matrix.app }}
       build-args: |
         APP_NAME=${{ matrix.app }}
+
+  release-dev:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [mu, nu, tu]
+
+    env:
+      CLUSTER_NAME: dev
+      K8S_CONFIG_REPO: andreswebs/argo-example-k8s-config-alt
+
+    steps:
+      ## TODO: checkout the target repo
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.K8S_CONFIG_REPO }}
+          ref: main
+          ssh-key: ${{ secrets.K8S_CONFIG_SSH_KEY }}
+
+      - name: Inspect
+        run: |
+          pwd
+          ls -lia
