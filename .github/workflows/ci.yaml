@@ -33,9 +33,9 @@ jobs:
 
   release-dev:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: [mu, nu, tu]
+    # strategy:
+    #   matrix:
+    #     app: [mu, nu, tu]
 
     env:
       CLUSTER_NAME: dev
@@ -48,9 +48,10 @@ jobs:
         with:
           repository: ${{ env.K8S_CONFIG_REPO }}
           ref: main
-          ssh-key: ${{ secrets.K8S_CONFIG_SSH_KEY }}
+          token: ${{ secrets.K8S_CONFIG_TOKEN }}
 
       - name: Inspect
         run: |
           pwd
           ls -lia
+          which yq
