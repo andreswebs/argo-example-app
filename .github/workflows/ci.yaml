@@ -69,13 +69,8 @@ jobs:
         run: |
           APP_VERSION=$(cut -d ':' -f 2 <(echo ${IMAGE}))
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
-
           yq -i ".appVersion = \"${APP_VERSION}\"" "Chart.yaml"
           yq -i ".deployment.image.tag = \"${APP_VERSION}\"" "values.yaml"
-          echo
-          cat "Chart.yaml"
-          echo
-          cat "values.yaml"
 
       - name: Create PR
         env:
@@ -93,9 +88,13 @@ jobs:
 
           git add .
           git commit -m "${MSG}"
+
+          echo "${K8S_CONFIG_TOKEN}" > token
+          gh auth login --with-token < token
+          rm token
+
           git push origin "${BRANCH_NAME}"
 
-          gh auth login --with-token <(echo ${K8S_CONFIG_TOKEN})
           gh pr create \
             --body "" \
             --title "${MSG}" \
