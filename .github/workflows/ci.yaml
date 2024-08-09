@@ -53,12 +53,16 @@ jobs:
           ref: main
           token: ${{ secrets.K8S_CONFIG_TOKEN }}
 
-      - name: Download source artifact
-        uses: actions/download-artifact@v4
+      - name: Get image value
+        id: image
+        uses: andreswebs/gh-actions/.github/actions/artifact-as-value@main
         with:
-          name: image-${{ matrix.app }}
+          key: image-${{ matrix.app }}
 
       - name: Inspect
+        env:
+          IMAGE: ${{ steps.image.outputs.value }}
         run: |
           pwd
           ls -lia
+          echo "IMAGE: ${IMAGE}"
