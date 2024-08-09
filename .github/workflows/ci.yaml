@@ -42,16 +42,18 @@ jobs:
 
     env:
       CLUSTER_NAME: dev
+      APP_NAME: ${{ matrix.app }}
       K8S_CONFIG_REPO: andreswebs/argo-example-k8s-config-alt
+      CHART_DIR: ./clusters/dev/${{ matrix.app }}
 
     ## https://github.com/orgs/community/discussions/49745#discussioncomment-5275999
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.K8S_CONFIG_TOKEN }}
           repository: ${{ env.K8S_CONFIG_REPO }}
           ref: main
-          token: ${{ secrets.K8S_CONFIG_TOKEN }}
 
       - name: Get image value
         id: image
@@ -59,10 +61,47 @@ jobs:
         with:
           key: image-${{ matrix.app }}
 
-      - name: Inspect
+      - name: Update version
         env:
           IMAGE: ${{ steps.image.outputs.value }}
+          CHART_DIR: ${{ env.CHART_DIR }}
+        working-directory: ${{ env.CHART_DIR }}
         run: |
-          pwd
-          ls -lia
-          echo "IMAGE: ${IMAGE}"
+          APP_VERSION=$(cut -d ':' -f 2 <(echo ${IMAGE}))
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+
+          yq -i ".appVersion = ${APP_VERSION}" "Chart.yaml"
+          yq -i ".deployment.image.tag = ${APP_VERSION}" "values.yaml"
+          echo
+          cat "Chart.yaml"
+          echo
+          cat "values.yaml"
+
+      - name: Create PR
+        env:
+          APP_NAME: ${{ env.APP_NAME }}
+          K8S_CONFIG_TOKEN: ${{ secrets.K8S_CONFIG_TOKEN }}
+
+        run: |
+          BRANCH_NAME=auto-${APP_NAME}-${APP_VERSION}
+          MSG="chore: update ${APP_NAME} to ${APP_VERSION}"
+
+          git config user.name "github-actions [bot]"
+          git config user.email "example@example.com"
+
+          # Create a new feature branch for the changes.
+          git checkout -b ${BRANCH_NAME}
+
+          # Commit the changes and push the feature branch to origin
+          git add .
+          git commit -m "${MSG}"
+          git push origin ${BRANCH_NAME}
+
+          # Authorize GitHub CLI for the current repository and
+          # create a pull-requests containing the updates.
+          gh auth login --with-token <(echo ${K8S_CONFIG_TOKEN})
+          gh pr create \
+            --body "" \
+            --title "${MSG}" \
+            --head "${BRANCH_NAME}" \
+            --base "main"
