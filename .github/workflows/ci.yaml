@@ -25,6 +25,7 @@ jobs:
       ecr-registry-type: public
       add-image-default-tag: true
       image-default-tag: latest
+      image-artifact: image-${{ matrix.app }}
       context-dir: .
       matrix-step-name: build
       matrix-key: ${{ matrix.app }}
@@ -33,16 +34,18 @@ jobs:
 
   release-dev:
     runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     app: [mu, nu, tu]
+    needs: [build]
+
+    strategy:
+      matrix:
+        app: [mu, nu, tu]
 
     env:
       CLUSTER_NAME: dev
       K8S_CONFIG_REPO: andreswebs/argo-example-k8s-config-alt
 
+    ## https://github.com/orgs/community/discussions/49745#discussioncomment-5275999
     steps:
-      ## TODO: checkout the target repo
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -50,8 +53,12 @@ jobs:
           ref: main
           token: ${{ secrets.K8S_CONFIG_TOKEN }}
 
+      - name: Download source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: image-${{ matrix.app }}
+
       - name: Inspect
         run: |
           pwd
           ls -lia
-          which yq
