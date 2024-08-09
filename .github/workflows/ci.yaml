@@ -67,7 +67,7 @@ jobs:
           CHART_DIR: ${{ env.CHART_DIR }}
         working-directory: ${{ env.CHART_DIR }}
         run: |
-          APP_VERSION=$(cut -d ':' -f 2 <(echo ${IMAGE}))
+          APP_VERSION="$(cut -d ':' -f 2 <(echo ${IMAGE}))"
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
           yq -i ".appVersion = ${APP_VERSION}" "Chart.yaml"
