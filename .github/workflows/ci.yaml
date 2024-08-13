@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Upgrade Chart
-        uses: andreswebs/gh-actions/.github/actions/helm-chart-upgrade-via-pr@dev
+        uses: andreswebs/gh-actions/.github/actions/helm-chart-upgrade-via-pr@main
         with:
           token: ${{ secrets.K8S_CONFIG_TOKEN }}
           repository: ${{ env.K8S_CONFIG_REPO }}
