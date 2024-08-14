@@ -69,7 +69,7 @@ jobs:
           prv-key: ${{ secrets.GH_APP_PRV_KEY }}
 
       - name: Upgrade Chart
-        uses: andreswebs/gh-actions/.github/actions/helm-chart-upgrade-via-pr@main
+        uses: andreswebs/gh-actions/.github/actions/helm-chart-upgrade-via-pr@dev
         with:
           # token: ${{ secrets.K8S_CONFIG_TOKEN }}
           repository: ${{ env.K8S_CONFIG_REPO }}
