@@ -47,11 +47,33 @@ jobs:
       CHART_DIR: ./clusters/dev/${{ matrix.app }}
 
     steps:
+      - name: Get image value
+        id: image
+        uses: andreswebs/gh-actions/.github/actions/artifact-as-value@main
+        with:
+          key: image-${{ matrix.app }}
+
+      - name: Get app version
+        id: app
+        shell: bash
+        env:
+          IMAGE: ${{ steps.image.outputs.value }}
+        run: |
+          APP_VERSION=$(cut -d ':' -f 2 <(echo ${IMAGE}))
+          echo "version=${APP_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Authenticate Git
+        uses: andreswebs/gh-actions/.github/actions/gh-app-auth@dev
+        with:
+          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          prv-key: ${{ secrets.GH_APP_PRV_KEY }}
+
       - name: Upgrade Chart
         uses: andreswebs/gh-actions/.github/actions/helm-chart-upgrade-via-pr@main
         with:
-          token: ${{ secrets.K8S_CONFIG_TOKEN }}
+          # token: ${{ secrets.K8S_CONFIG_TOKEN }}
           repository: ${{ env.K8S_CONFIG_REPO }}
           image-artifact: image-${{ env.APP_NAME }}
           chart-dir: ${{ env.CHART_DIR }}
           chart-name: ${{ env.APP_NAME }}
+          app-version: ${{ steps.app.outputs.version }}
