@@ -15,7 +15,10 @@ jobs:
   build:
     strategy:
       matrix:
-        app: [mu, nu, tu]
+        app:
+          - mu
+          # - nu
+          # - tu
     uses: andreswebs/gh-actions/.github/workflows/aws-ecr-push-image.yml@main
     with:
       runs-on: ubuntu-latest
@@ -37,7 +40,10 @@ jobs:
 
     strategy:
       matrix:
-        app: [mu, nu, tu]
+        app:
+          - mu
+          # - nu
+          # - tu
 
     uses: andreswebs/gh-actions/.github/workflows/helm-upgrade-chart.yml@dev
     with:
