@@ -66,10 +66,6 @@ jobs:
             echo ENDOFTEXT
           } >> $GITHUB_OUTPUT
 
-      - name: Mask the private key
-        run: |
-          echo "::add-mask::${{ steps.secret.outputs.gh-app-prv-key }}"
-
   release-dev:
     needs: [build, secret]
 
@@ -87,5 +83,7 @@ jobs:
       # gh-app-id: ${{ needs.secret.outputs.gh-app-id }}
       # gh-app-prv-key: ${{ needs.secret.outputs.gh-app-prv-key }}
     secrets:
-      gh-app-client-id: ${{ secrets.GH_APP_CLIENT_ID }}
-      gh-app-prv-key: ${{ secrets.GH_APP_PRV_KEY }}
+      gh-app-client-id: ${{ needs.secret.outputs.gh-app-id }}
+      gh-app-prv-key: ${{ needs.secret.outputs.gh-app-prv-key }}
+      # gh-app-client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+      # gh-app-prv-key: ${{ secrets.GH_APP_PRV_KEY }}
