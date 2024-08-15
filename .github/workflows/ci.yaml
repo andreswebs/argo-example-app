@@ -61,9 +61,9 @@ jobs:
           echo "gh-app-id=${ARGOCD_GITHUB_APP_ID}" >> $GITHUB_OUTPUT
 
           {
-            echo gh-app-prv-key<<EOT
+            echo 'gh-app-prv-key<<ENDOFTEXT'
             echo "${ARGOCD_GITHUB_APP_PRV_KEY}" | base64 -d
-            echo EOT
+            echo ENDOFTEXT
           } >> $GITHUB_OUTPUT
 
   release-dev:
