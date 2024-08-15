@@ -33,7 +33,7 @@ jobs:
         APP_NAME=${{ matrix.app }}
 
   release-dev:
-    needs: [build, secret]
+    needs: [build]
 
     strategy:
       matrix:
