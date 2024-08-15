@@ -55,4 +55,5 @@ jobs:
       secret-id: /tmp/ARGOCD_CONFIG
       aws-region: ${{ vars.AWS_REGION }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+#
 # test
