@@ -32,8 +32,33 @@ jobs:
       build-args: |
         APP_NAME=${{ matrix.app }}
 
-  release-dev:
+  secret:
+    runs-on: ubuntu-latest
     needs: [build]
+    outputs:
+      gh-app-id: ${{ steps.secret.outputs.gh-app-id }}
+      gh-app-prv-key: ${{ steps.secret.outputs.gh-app-prv-key }}
+    steps:
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+      - name: Get Secret
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          parse-json-secrets: true
+          secret-ids: |
+            ARGOCD,/tmp/ARGOCD_CONFIG
+      - name: Pass Secret
+        id: secret
+        run: |
+          GH_APP_PRV_KEY=$(echo "${ARGOCD_GITHUB_APP_PRIVATE_KEY}" | base64 -d)
+          echo "gh-app-id=${ARGOCD_GITHUB_APP_ID}" >> $GITHUB_OUTPUT
+          echo "gh-app-prv-key=${GH_APP_PRV_KEY}" >> $GITHUB_OUTPUT
+
+  release-dev:
+    needs: [build, secret]
 
     strategy:
       matrix:
@@ -47,5 +72,7 @@ jobs:
       chart-dir: ./clusters/dev/${{ matrix.app }}
       chart-name: ${{ matrix.app }}
     secrets:
-      gh-app-client-id: ${{ secrets.GH_APP_CLIENT_ID }}
-      gh-app-prv-key: ${{ secrets.GH_APP_PRV_KEY }}
+      # gh-app-client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+      # gh-app-prv-key: ${{ secrets.GH_APP_PRV_KEY }}
+      gh-app-id: ${{ needs.secret.outputs.gh-app-id }}
+      gh-app-prv-key: ${{ needs.secret.outputs.gh-app-prv-key }} }}
