@@ -60,8 +60,8 @@ jobs:
         run: |
           echo "gh-app-id=${ARGOCD_GITHUB_APP_ID}" >> $GITHUB_OUTPUT
 
-          echo "${ARGOCD_GITHUB_APP_ID}"
-          echo "${ARGOCD_GITHUB_APP_PRIVATE_KEY}" | base64 -d
+          echo gh-app-id:
+          [ "${ARGOCD_GITHUB_APP_ID}" = "969578" ] && echo 969578
 
           {
             echo 'gh-app-prv-key<<ENDOFTEXT'
