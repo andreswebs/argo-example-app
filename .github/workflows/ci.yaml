@@ -35,27 +35,36 @@ jobs:
   secret:
     runs-on: ubuntu-latest
     needs: [build]
+
     outputs:
       gh-app-id: ${{ steps.secret.outputs.gh-app-id }}
       gh-app-prv-key: ${{ steps.secret.outputs.gh-app-prv-key }}
+
     steps:
       - name: AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+
       - name: Get Secret
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           parse-json-secrets: true
           secret-ids: |
             ARGOCD,/tmp/ARGOCD_CONFIG
+
+      # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#multiline-strings
       - name: Pass Secret
         id: secret
         run: |
-          GH_APP_PRV_KEY=$(echo "${ARGOCD_GITHUB_APP_PRIVATE_KEY}" | base64 -d)
           echo "gh-app-id=${ARGOCD_GITHUB_APP_ID}" >> $GITHUB_OUTPUT
-          echo "gh-app-prv-key=${GH_APP_PRV_KEY}" >> $GITHUB_OUTPUT
+
+          {
+            echo gh-app-prv-key<<EOT
+            echo "${ARGOCD_GITHUB_APP_PRV_KEY}" | base64 -d
+            echo EOT
+          } >> $GITHUB_OUTPUT
 
   release-dev:
     needs: [build, secret]
