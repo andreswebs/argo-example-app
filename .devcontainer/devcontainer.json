@@ -5,7 +5,7 @@
   "features": {
     "ghcr.io/andreswebs/features/zsh-starship:0": {},
     "ghcr.io/andreswebs/features/k8s-tools:0": {},
-    "ghcr.io/devcontainers/features/aws-cli:1": {}
+    "ghcr.io/andreswebs/features/aws-cli:0": {}
   },
   "customizations": {
     "vscode": {
