@@ -8,6 +8,7 @@ metadata:
 spec:
   ports:
     - port: 80
+      targetPort: 80
       protocol: TCP
   clusterIP: None
   selector:
@@ -32,6 +33,8 @@ spec:
       containers:
         - name: whoami
           image: whoami
+          ports:
+            - containerPort: 80
           resources:
             requests:
               memory: 64Mi
