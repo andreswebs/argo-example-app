@@ -1,0 +1,17 @@
+---
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: argo-example-app
+build:
+  artifacts:
+    - image: whoami
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - .devcontainer/k8s/whoami.yaml
+portForward:
+  - resourceType: service
+    resourceName: whoami
+    port: 80

@@ -1,0 +1,39 @@
+{
+  "name": "C#",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:1-8.0-bookworm",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/andreswebs/features/zsh-starship:0": {},
+    "ghcr.io/andreswebs/features/k8s-tools:0": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "files.insertFinalNewline": true,
+        "editor.formatOnSave": true,
+        "editor.suggestSelection": "first",
+        "extensions": [
+          "EditorConfig.EditorConfig",
+          "GitHub.vscode-github-actions",
+          "GitHub.remotehub",
+          "ms-azuretools.vscode-docker",
+          "ms-kubernetes-tools.vscode-kubernetes-tools",
+          "timonwong.shellcheck",
+          "redhat.vscode-yaml",
+          "yzhang.markdown-all-in-one",
+          "ms-dotnettools.csdevkit",
+          "ms-vscode.makefile-tools",
+          "patcx.vscode-nuget-gallery",
+          "eamodio.gitlens"
+        ]
+      }
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/postcreate.sh"
+}
