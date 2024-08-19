@@ -45,7 +45,7 @@ jobs:
           # - nu
           # - tu
 
-    uses: andreswebs/gh-actions/.github/workflows/helm-upgrade-chart.yml@dev
+    uses: andreswebs/gh-actions/.github/workflows/helm-upgrade-chart.yml@main
     with:
       runs-on: ubuntu-latest
       image-artifact: image-${{ matrix.app }}
@@ -55,5 +55,3 @@ jobs:
       secret-id: /tmp/ARGOCD_CONFIG
       aws-region: ${{ vars.AWS_REGION }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
-#
-# test
