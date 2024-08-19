@@ -12,7 +12,7 @@ build:
           APP_NAME: codespaces-test
 manifests:
   rawYaml:
-    - .devcontainer/k8s/whoami.yaml
+    - .devcontainer/k8s/app.yaml
 portForward:
   - resourceType: service
     resourceName: whoami
