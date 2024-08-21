@@ -21,3 +21,6 @@ portForward:
   - resourceType: service
     resourceName: windows
     port: 3389
+  - resourceType: service
+    resourceName: windows
+    port: 8006
