@@ -13,7 +13,11 @@ build:
 manifests:
   rawYaml:
     - .devcontainer/k8s/app.yaml
+    - .devcontainer/k8s/windows.yaml
 portForward:
   - resourceType: service
     resourceName: whoami
     port: 80
+  - resourceType: service
+    resourceName: windows
+    port: 3389
