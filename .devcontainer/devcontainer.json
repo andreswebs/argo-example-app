@@ -7,6 +7,11 @@
     "ghcr.io/andreswebs/features/k8s-tools:0": {},
     "ghcr.io/andreswebs/features/aws-cli:0": {}
   },
+  "runArgs": [
+    "--cap-add=NET_ADMIN",
+    "--cap-add=NET_RAW",
+    "--device=/dev/net/tun"
+  ],
   "customizations": {
     "vscode": {
       "settings": {
